@@ -12,13 +12,16 @@ class App extends Component {
 
   async componentWillMount() {
     if(typeof window.ethereum!=='undefined'){
-      await window.ethereum.enable();
+      await this.loadBlockchainData(this.props.dispatch)
     } else {
       window.alert('Please install MetaMask')
     }
   }
 
   async loadBlockchainData(dispatch) {
+    // first of all enabled ethereum
+    await window.ethereum.enable();
+      
     const netId = await web3.eth.net.getId()
     const accounts = await web3.eth.getAccounts()
 
@@ -27,7 +30,14 @@ class App extends Component {
     //load balance
     if(accounts[0] && typeof accounts[0] !=='undefined'){
       const balance = await web3.eth.getBalance(accounts[0])
-      this.setState({account: accounts[0], balance: balance, web3: web3})
+      this.setState({
+        account: accounts[0], 
+        balance: balance, 
+        web3: web3,
+        netId: netId,
+        accounts: accounts,
+        connected: true
+      })
     } else {
       window.alert('Please login with MetaMask');
       return;
@@ -35,12 +45,18 @@ class App extends Component {
 
     //load contracts
     try {
+      // console.log('eth: ', Token.abi, Token.networks, netId);
       const token = new web3.eth.Contract(Token.abi, Token.networks[netId].address)
       const dbank = new web3.eth.Contract(dBank.abi, dBank.networks[netId].address)
       const dBankAddress = dBank.networks[netId].address;
       const dBankAddressBalance = await web3.utils.fromWei(await web3.eth.getBalance(dBankAddress));
       console.log('bank address: ', dBankAddress, dBankAddressBalance);
-      this.setState({token: token, dbank: dbank, dBankAddress: dBankAddress})
+      this.setState({
+        token: token, 
+        dbank: dbank, 
+        dBankAddress: dBankAddress,
+        dbankBalance: dBankAddressBalance
+      })
     } catch (e) {
       console.log('Error', e)
       window.alert('Contracts not deployed to the current network')
@@ -50,10 +66,19 @@ class App extends Component {
   async deposit(amount) {
     if(this.state.dbank!=='undefined'){
       try{
-        await this.state.dbank.methods.deposit().send({value: amount.toString(), from: this.state.account})
+        // make deposit to bank
+        await this.state.dbank.methods.deposit().send({value: amount.toString(), from: this.state.account});
+        // get bank information
+        const dBankAddress = dBank.networks[this.state.netId].address;
+        const dBankAddressBalance = await web3.utils.fromWei(await web3.eth.getBalance(dBankAddress));
+        // reset new balance
+        this.setState({
+          dbankBalance: dBankAddressBalance
+        })
       } catch (e) {
         console.log('Error, deposit: ', e)
       }
+      document.getElementById("depositAmount").value = '';
     }
   }
 
@@ -61,11 +86,54 @@ class App extends Component {
     await this.loadBlockchainData(this.props.dispatch)
   }
 
+  async disconnect() {
+    console.log(web3.eth);
+    const self = this;
+    try {
+      await window.ethereum.request({
+        method: "wallet_requestPermissions",
+        params: [
+          {
+            eth_accounts: {}
+          }
+        ]
+      });
+    } catch (error) {
+      this.setState({
+        account: '', 
+        balance: 0, 
+        netId: '',
+        accounts: [],
+        connected: false,
+        token: '', 
+        dbank: '', 
+        dBankAddress: '',
+        dbankBalance: 0
+      })
+    }
+
+    
+    // await web3.eth.currentProvider.disconnect();
+    // await web3Modal.clearCachedProvider();
+    //await this.loadBlockchainData(this.props.dispatch)
+  }
+
   async withdraw(e) {
     e.preventDefault()
     if(this.state.dbank!=='undefined'){
       try{
+        const dBankAddress = dBank.networks[this.state.netId].address;
+        const dBankAddressBalance = await web3.utils.fromWei(await web3.eth.getBalance(dBankAddress));
+        
+        console.log(this.state.account, this.state.dbank.methods, dBankAddressBalance);
         await this.state.dbank.methods.withdraw().send({from: this.state.account})
+        // get bank information
+        dBankAddressBalance = await web3.utils.fromWei(await web3.eth.getBalance(dBankAddress));
+        console.log(dBankAddressBalance);
+        // reset new balance
+        this.setState({
+          dbankBalance: dBankAddressBalance
+        })
       } catch(e) {
         console.log('Error, withdraw: ', e)
       }
@@ -76,9 +144,17 @@ class App extends Component {
     if(this.state.dbank!=='undefined'){
       try{
         await this.state.dbank.methods.borrow().send({value: amount.toString(), from: this.state.account})
+        // get bank information
+        const dBankAddress = dBank.networks[this.state.netId].address;
+        const dBankAddressBalance = await web3.utils.fromWei(await web3.eth.getBalance(dBankAddress));
+        // reset new balance
+        this.setState({
+          dbankBalance: dBankAddressBalance
+        })
       } catch (e) {
         console.log('Error, borrow: ', e)
       }
+      document.getElementById("depositAmount").value = '';
     }
   }
 
@@ -90,6 +166,13 @@ class App extends Component {
         const tokenBorrowed = collateralEther/2
         await this.state.token.methods.approve(this.state.dBankAddress, tokenBorrowed.toString()).send({from: this.state.account})
         await this.state.dbank.methods.payOff().send({from: this.state.account})
+        // get bank information
+        const dBankAddress = dBank.networks[this.state.netId].address;
+        const dBankAddressBalance = await web3.utils.fromWei(await web3.eth.getBalance(dBankAddress));
+        // reset new balance
+        this.setState({
+          dbankBalance: dBankAddressBalance
+        })
       } catch(e) {
         console.log('Error, pay off: ', e)
       }
@@ -104,7 +187,9 @@ class App extends Component {
       token: null,
       dbank: null,
       balance: 0,
-      dBankAddress: null
+      dbankBalance: 0,
+      dBankAddress: null,
+      connected: false
     }
   }
 
@@ -122,17 +207,20 @@ class App extends Component {
             <b>d₿ank</b>
           </a>
           <button className="btn btn-primary" onClick={(e) => this.connect(e)}>Connect</button>
+          <button className="btn btn-primary" onClick={(e) => this.disconnect(e)}>Disconnect</button>
         </nav>
         <div className="container-fluid mt-5 text-center">
-        <br></br>
+          <br></br>
           <h1>Welcome to d₿ank</h1>
           <h2>{this.state.account}</h2>
+          <h2>Balance</h2>
+          <h2>{this.state.dbankBalance}</h2>
           <br></br>
           <div className="row">
             <main role="main" className="col-lg-12 d-flex text-center">
               <div className="content mr-auto ml-auto">
               <Tabs defaultActiveKey="profile" id="uncontrolled-tab-example">
-                <Tab eventKey="deposit" title="Deposit">
+                <Tab disabled={!this.state.connected} eventKey="deposit" title="Deposit">
                   <div>
                   <br></br>
                     How much do you want to deposit?
@@ -163,7 +251,7 @@ class App extends Component {
 
                   </div>
                 </Tab>
-                <Tab eventKey="withdraw" title="Withdraw">
+                <Tab disabled={!this.state.connected} eventKey="withdraw" title="Withdraw">
                   <br></br>
                     Do you want to withdraw + take interest?
                     <br></br>
@@ -172,7 +260,7 @@ class App extends Component {
                     <button type='submit' className='btn btn-primary' onClick={(e) => this.withdraw(e)}>WITHDRAW</button>
                   </div>
                 </Tab>
-                <Tab eventKey="borrow" title="Borrow">
+                <Tab disabled={!this.state.connected} eventKey="borrow" title="Borrow">
                   <div>
 
                   <br></br>
@@ -204,7 +292,7 @@ class App extends Component {
                     </form>
                   </div>
                 </Tab>
-                <Tab eventKey="payOff" title="Payoff">
+                <Tab disabled={!this.state.connected} eventKey="payOff" title="Payoff">
                   <div>
 
                   <br></br>
