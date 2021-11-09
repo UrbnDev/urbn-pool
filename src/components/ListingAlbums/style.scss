@@ -1,0 +1,13 @@
+.listing-albums{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.load-more{
+  width: 50%;
+  border-radius: 10px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  padding: 15px;
+}

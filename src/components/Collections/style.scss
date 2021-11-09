@@ -1,0 +1,15 @@
+.collection {
+  margin-bottom: 60px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  padding: 55px 20px;
+  border-radius: 20px;
+  text-align: left;
+  
+  .card-title{
+    font-size: 1.7rem;
+    max-width: 450px;
+    margin: 0;
+    line-height: 2.5rem;
+  }
+}

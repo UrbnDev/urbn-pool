@@ -1,0 +1,62 @@
+.big-card{
+  max-width: 250px;
+  width: 30%;
+  border-radius: 30px;
+  background-color: #2a2d3a;
+  margin-bottom: 30px;
+
+  .big-card-container{
+    position: relative;
+  
+    .big-card-profile{
+      border-radius: 30px;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 250px;
+      margin: 10px;
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+  
+    .card-body{
+      text-align: left;
+      font-size: 0.8rem;
+
+      .favorite{
+        width: 15px;
+      }
+
+      .card-title{
+        font-size: 1rem;
+        margin-bottom: 8px;
+        height: 40px;
+      }
+
+      .album-meta{
+        display: flex;
+        justify-content: space-between;
+
+        .card-text{
+          margin: 0;
+        }
+      }
+    }
+  }
+}
+
+/* On screens that are 992px or less, set the background color to blue */
+@media screen and (max-width: 768px) {
+  .big-card{
+    width: 48%;
+    max-width: 100%;
+  }
+}
+
+@media screen and (max-width: 425px) {
+  .big-card{
+    width: 100%;
+  }
+}

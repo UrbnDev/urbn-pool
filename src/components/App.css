@@ -1,1 +1,8 @@
 /* Styles go here */
+.content{
+  overflow-x: hidden;
+}
+
+.top-section{
+  margin-top: 80px;
+}

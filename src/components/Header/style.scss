@@ -1,0 +1,27 @@
+.navbar{
+  border-bottom: 1px solid #24252D;
+
+  .navbar-middle {
+    width: 100%;
+    justify-content: inherit;
+  
+    .search-bar input{
+      color: #495057;
+      font-size: 11px;
+      background-color: #1B1A21;
+      border: 1px solid #1B1A21;
+      margin-right: 5px;
+      max-width: 550px;
+    }
+  
+    .navbar-nav .nav-link {
+      color: #4F4F4F;
+      font-size: 0.8rem;
+    }
+    
+    .navbar-nav .nav-link.active {
+      color: #fff;
+    }
+  } 
+  
+}

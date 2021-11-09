@@ -1,10 +1,18 @@
 import { Tabs, Tab } from 'react-bootstrap'
-import dBank from '../abis/dBank.json'
 import React, { Component } from 'react';
 import Token from '../abis/Token.json'
-import dbank from '../dbank.png';
+import dBank from '../abis/dBank.json';
 import Web3 from 'web3';
-import './App.css';
+
+import '../assets/style/main.scss';
+
+import './App.css';// Pagination module
+
+// import components
+import Header from './Header';
+import Collection from './Collections';
+import Carousel from './Carousel';
+import ListingAlbums from './ListingAlbums';
 
 const web3 = new Web3(window.ethereum)
 
@@ -12,13 +20,13 @@ class App extends Component {
 
   async componentWillMount() {
     if(typeof window.ethereum!=='undefined'){
-      await this.loadBlockchainData(this.props.dispatch)
+      await this.loadBlockchainData()
     } else {
       window.alert('Please install MetaMask')
     }
   }
 
-  async loadBlockchainData(dispatch) {
+  async loadBlockchainData() {
     // first of all enabled ethereum
     await window.ethereum.enable();
       
@@ -83,7 +91,7 @@ class App extends Component {
   }
 
   async connect() {
-    await this.loadBlockchainData(this.props.dispatch)
+    await this.loadBlockchainData()
   }
 
   async disconnect() {
@@ -195,21 +203,28 @@ class App extends Component {
 
   render() {
     return (
-      <div className='text-monospace'>
-        <nav className="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
-          <a
-            className="navbar-brand col-sm-3 col-md-2 mr-0"
-            href="http://www.dappuniversity.com/bootcamp"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <img src={dbank} className="App-logo" alt="logo" height="32"/>
-            <b>d₿ank</b>
-          </a>
-          <button className="btn btn-primary" onClick={(e) => this.connect(e)}>Connect</button>
-          <button className="btn btn-primary" onClick={(e) => this.disconnect(e)}>Disconnect</button>
-        </nav>
-        <div className="container-fluid mt-5 text-center">
+      <div className='content'>
+        <Header connected={this.state.connected} connect={e => this.connect(e)} disconnect={e => this.disconnect(e)} />
+        <div className="container mt-5 text-center">
+          <Collection />
+          <div className="top-section top-artists">
+            <h2>Top Artists</h2>
+            <Carousel />
+          </div>
+
+          <div className="top-section hot-albums">
+            <h2>Hot Albums</h2>
+            <ListingAlbums />
+          </div>
+
+          <div className="top-section top-track">
+            <h2>Top Tracks</h2>
+            <Carousel />
+          </div>
+
+          <br></br>
+          <br></br>
+          <br></br>
           <br></br>
           <h1>Welcome to d₿ank</h1>
           <h2>{this.state.account}</h2>

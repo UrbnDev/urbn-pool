@@ -1,0 +1,41 @@
+.swiper-slide .card{
+  margin: auto;
+  background-color: #2A2D3A;
+  border-radius: 30px;
+  font-size: 0.9rem;
+  height: 220px;
+
+  .artist-img-profile-container{
+    position: relative;
+
+    .artist-img-profile{
+      border-radius: 50%;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 90px;
+      height: 90px;
+      margin: auto;
+      margin-top: 20px;
+      margin-bottom: 15px;
+
+      .card-img-top{
+        height: 100%;
+        width: auto;
+      }
+    }
+
+    .verified{
+      width: 20px;
+      position: absolute;
+      bottom: 13px;
+      right: 50px;
+    }
+  }
+
+  .card-title{
+    font-size: 0.8rem;
+    margin-bottom: 7px;
+  }
+}
