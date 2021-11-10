@@ -5,6 +5,10 @@
   background-color: #2a2d3a;
   margin-bottom: 30px;
 
+  a:hover{
+    text-decoration: none;
+  }
+
   .big-card-container{
     position: relative;
   
@@ -24,6 +28,7 @@
     .card-body{
       text-align: left;
       font-size: 0.8rem;
+      color: #fff;
 
       .favorite{
         width: 15px;

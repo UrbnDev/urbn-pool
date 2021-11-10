@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-
+import {
+  Link
+} from "react-router-dom";
 import { Button, Navbar, Container, Nav, Form, FormControl } from 'react-bootstrap';
 
 import logo from '../../assets/img/logo-urbn.svg';
@@ -24,8 +26,10 @@ class Header extends Component {
     return (
       <Navbar expand="lg">
         <Container>
-          <Navbar.Brand href="/">
-            <img src={logo} className="App-logo" alt="logo" height="32"/>
+          <Navbar.Brand>
+            <Link to={`/`}>
+              <img src={logo} className="App-logo" alt="logo" height="32"/>
+            </Link>
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="navbarScroll" />
           <Navbar.Collapse id="navbarScroll" className="justify-content-between">

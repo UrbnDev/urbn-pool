@@ -1,0 +1,50 @@
+.footer {
+  border-top: 1px solid #383838;
+  margin-top: 150px;
+  padding-top: 50px;
+
+  .app-logo{
+    margin-bottom: 10px;
+  }
+
+  .subs-bar{
+    margin: 10px 60px 20px 0;
+    
+    input {
+      color: #495057;
+      background-color: #1B1A21;
+      border: 1px solid #1B1A21;
+      max-width: 350px;
+    }
+
+    .btn{
+      background: linear-gradient(101.12deg, #EB1484 27.35%, #C91CC3 99.99%, #C81CC5 100%, #C81CC5 100%);
+      color: #fff;
+      margin: 0;
+      width: 300px;
+      position: relative;
+      left: -20px;
+    }
+
+    .btn:hover{
+      box-shadow: 0 0 15px #212121e6;
+      border: 0;
+    }
+  }
+  
+  ul {
+    list-style: none;
+    padding: 0;
+    font-size: 0.8rem;
+    line-height: 1.9rem;
+
+    a{
+      text-decoration: none;
+      color: #d01ab5;
+    }
+
+    a:hover{
+      color: #ac0c94;
+    }
+  }
+}

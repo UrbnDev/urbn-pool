@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
-
-import axios from 'axios';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link
+} from "react-router-dom";
 
 import BigCard from '../BigCard';
 
@@ -18,6 +22,7 @@ class Carousel extends Component {
       albums: [
         {
           "gender": "male",
+          "id": 'cbjdbcuefv-22324324', 
           "name": {
             "title": "Mr",
             "first": "Rochy",
@@ -31,6 +36,7 @@ class Carousel extends Component {
           "nat": "FI"
         },{
           "gender": "male",
+          "id": 'cbjdbcuefv-22324es4', 
           "name": {
             "title": "Mr",
             "first": "Quimico",
@@ -44,6 +50,7 @@ class Carousel extends Component {
           "nat": "FI"
         },{
           "gender": "male",
+          "id": 'cbjdbcuefv-22324345678', 
           "name": {
             "title": "Mr",
             "first": "El Cherry",
@@ -57,6 +64,7 @@ class Carousel extends Component {
           "nat": "FI"
         },{
           "gender": "male",
+          "id": 'cbjdbcuefv-2232ghd64', 
           "name": {
             "title": "Mr",
             "first": "La Perversa",
@@ -70,6 +78,7 @@ class Carousel extends Component {
           "nat": "FI"
         },{
           "gender": "male",
+          "id": 'cbjdbcuefv-vhjfbvjfbnk4454', 
           "name": {
             "title": "Mr",
             "first": "Yailin",
@@ -83,6 +92,7 @@ class Carousel extends Component {
           "nat": "FI"
         },{
           "gender": "male",
+          "id": 'cbjdbcuefv-cjfdv566', 
           "name": {
             "title": "Mr",
             "first": "Nino",
@@ -96,6 +106,7 @@ class Carousel extends Component {
           "nat": "FI"
         },{
           "gender": "male",
+          "id": 'cbjdbcuefv-cvbfjbvjg567', 
           "name": {
             "title": "Mr",
             "first": "Nene",
@@ -109,6 +120,7 @@ class Carousel extends Component {
           "nat": "FI"
         },{
           "gender": "male",
+          "id": 'cbjdbcuefv-458568gnv', 
           "name": {
             "title": "Mr",
             "first": "Nino",
@@ -157,6 +169,7 @@ class Carousel extends Component {
           <div className="listing-albums">
             {
               this.state.albums.map((album,i) => {
+                console.log(album);
                 return(
                   <BigCard item={album} />
                 )
