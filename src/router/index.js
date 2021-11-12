@@ -6,17 +6,21 @@ import {
 } from "react-router-dom";
 import { Container, Row, Col } from 'react-bootstrap';
 
-import Token from '../abis/Token.json'
+import { createBrowserHistory } from "history";
+
+import Token from '../abis/Token.json';
 import dBank from '../abis/dBank.json';
 import Web3 from 'web3';
 
 import Home from '../pages/Home';
-import DetailsAlbum from '../pages/DetailsAlbum';
+import DetailsItem from '../pages/DetailsItem';
 
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 
-const web3 = new Web3(window.ethereum)
+const web3 = new Web3(window.ethereum);
+
+const history = createBrowserHistory();
 
 class RouterApp extends Component {
   async componentWillMount() {
@@ -204,7 +208,7 @@ class RouterApp extends Component {
 
   render() {
     return (
-      <Router>
+      <Router history={history}>
         <div>
           <Header connected={this.state.connected} connect={e => this.connect(e)} disconnect={e => this.disconnect(e)} />
           {/* A <Routes> looks through its children <Route>s and
@@ -213,7 +217,7 @@ class RouterApp extends Component {
             <Route path='/' element={<Home/>} />
           </Routes>
           <Routes>
-            <Route path='/album/:id' element={<DetailsAlbum/>} />
+            <Route path='/item/:id' element={<DetailsItem/>} />
           </Routes>
 
           <div className="footer">

@@ -178,7 +178,7 @@ class Carousel extends Component {
   }
 
   render() {
-    console.log('getting artists: ', this.state.artists);
+    
     if (this.state.artists.length > 0){
       return (
         <Swiper 
@@ -187,7 +187,9 @@ class Carousel extends Component {
           slidesPerView={'auto'}
           navigation
           scrollbar={{ draggable: true }}
-          onSwiper={(swiper) => console.log(swiper)}
+          onSwiper={(swiper) => {
+            // console.log(swiper);
+          }}
           onSlideChange={() => console.log('slide change')}
           className="carousel-swiper"
         >

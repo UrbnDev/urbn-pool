@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import Token from '../../abis/Token.json'
 import dBank from '../../abis/dBank.json';
 import Web3 from 'web3';
+import { OpenSeaPort, Network } from 'opensea-js'
 
 import '../../assets/style/main.scss';
 
@@ -13,6 +14,13 @@ import ListingAlbums from '../../components/ListingAlbums';
 import Collection from '../../components/Collections';
 import Carousel from '../../components/Carousel';
 
+// This example provider won't let you make transactions, only read-only calls:
+const provider = new Web3.providers.HttpProvider('https://mainnet.infura.io');
+
+const seaport = new OpenSeaPort(provider, {
+  networkName: Network.Main
+})
+
 const web3 = new Web3(window.ethereum)
 
 class Home extends Component {
@@ -20,8 +28,22 @@ class Home extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      
+      items: []
     }
+
+    const addressWallet = process.env.REACT_APP_WALLET_ADDRESS_STORE;
+    const url = `https://api.opensea.io/api/v1/assets?owner=${addressWallet}&order_direction=desc&offset=0&limit=20`;
+    const options = {method: 'GET'};
+
+    fetch(url, options)
+      .then(res => res.json())
+      .then(data => {
+        this.setState({
+          items: data.assets
+        })
+      })
+      .catch(err => console.error('error:' + err));
+
   }
 
   render() {
@@ -138,7 +160,10 @@ class Home extends Component {
 
           <div className="top-section hot-albums">
             <h2>Hot Albums</h2>
-            <ListingAlbums />
+            {
+              this.state.items.length > 0 &&
+              <ListingAlbums items={this.state.items} />
+            }
           </div>
 
           <div className="top-section top-track">

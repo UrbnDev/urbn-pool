@@ -35,7 +35,7 @@ class App extends Component {
     const netId = await web3.eth.net.getId()
     const accounts = await web3.eth.getAccounts()
 
-    console.log(web3, accounts);
+    // console.log(web3, accounts);
 
     //load balance
     if(accounts[0] && typeof accounts[0] !=='undefined'){
@@ -60,7 +60,7 @@ class App extends Component {
       const dbank = new web3.eth.Contract(dBank.abi, dBank.networks[netId].address)
       const dBankAddress = dBank.networks[netId].address;
       const dBankAddressBalance = await web3.utils.fromWei(await web3.eth.getBalance(dBankAddress));
-      console.log('bank address: ', dBankAddress, dBankAddressBalance);
+      // console.log('bank address: ', dBankAddress, dBankAddressBalance);
       this.setState({
         token: token, 
         dbank: dbank, 
@@ -97,7 +97,7 @@ class App extends Component {
   }
 
   async disconnect() {
-    console.log(web3.eth);
+    // console.log(web3.eth);
     const self = this;
     try {
       await window.ethereum.request({
@@ -135,11 +135,11 @@ class App extends Component {
         const dBankAddress = dBank.networks[this.state.netId].address;
         const dBankAddressBalance = await web3.utils.fromWei(await web3.eth.getBalance(dBankAddress));
         
-        console.log(this.state.account, this.state.dbank.methods, dBankAddressBalance);
+        // console.log(this.state.account, this.state.dbank.methods, dBankAddressBalance);
         await this.state.dbank.methods.withdraw().send({from: this.state.account})
         // get bank information
         dBankAddressBalance = await web3.utils.fromWei(await web3.eth.getBalance(dBankAddress));
-        console.log(dBankAddressBalance);
+        // console.log(dBankAddressBalance);
         // reset new balance
         this.setState({
           dbankBalance: dBankAddressBalance
