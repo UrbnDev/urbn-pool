@@ -3,10 +3,23 @@ import {
   Link
 } from "react-router-dom";
 import { Button, Navbar, Container, Nav, Form, FormControl } from 'react-bootstrap';
+import Modal from 'react-modal';
+import Uniswap from '../Uniswap';
 
 import logo from '../../assets/img/logo-urbn.svg';
 
 import './style.scss';
+
+const customStyles = {
+  content: {
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)',
+  },
+};
 
 class Header extends Component {
 
@@ -17,8 +30,15 @@ class Header extends Component {
   constructor(props) {
     super(props)
     this.state = {
-
+      openUniswap: false
     }
+  }
+ 
+  toogleModal = () =>{ 
+    console.log('toogle: ' );
+    this.setState({
+      openUniswap: !this.state.openUniswap
+    })
   }
 
   render() {
@@ -49,6 +69,7 @@ class Header extends Component {
                 <Nav.Link href="#" className="active">Explore</Nav.Link>
                 <Nav.Link href="#">My Activities</Nav.Link>
                 <Nav.Link href="#">Following</Nav.Link>
+                <Nav.Link onClick={()=> this.toogleModal()} >Uniswap</Nav.Link>
               </Nav>
             </div>
             <div className="buttons">
@@ -63,6 +84,20 @@ class Header extends Component {
             </div>
           </Navbar.Collapse>
         </Container>
+        <Modal
+          isOpen={this.state.openUniswap}
+          style={customStyles}
+          shouldCloseOnOverlayClick={true}
+          contentLabel="Uniswap Modal"
+        >
+
+          <div className="uniswap-content">
+
+            <a onClick={this.toogleModal} class="close"></a>
+            <Uniswap />
+            
+          </div>
+        </Modal>
       </Navbar>
     );
   }

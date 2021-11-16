@@ -55,44 +55,6 @@ class RouterApp extends Component {
       window.alert('Please login with MetaMask');
       return;
     }
-
-    //load contracts
-    try {
-      // console.log('eth: ', Token.abi, Token.networks, netId);
-      const token = new web3.eth.Contract(Token.abi, Token.networks[netId].address)
-      const dbank = new web3.eth.Contract(dBank.abi, dBank.networks[netId].address)
-      const dBankAddress = dBank.networks[netId].address;
-      const dBankAddressBalance = await web3.utils.fromWei(await web3.eth.getBalance(dBankAddress));
-      console.log('bank address: ', dBankAddress, dBankAddressBalance);
-      this.setState({
-        token: token, 
-        dbank: dbank, 
-        dBankAddress: dBankAddress,
-        dbankBalance: dBankAddressBalance
-      })
-    } catch (e) {
-      console.log('Error', e)
-      window.alert('Contracts not deployed to the current network')
-    }
-  }
-
-  async deposit(amount) {
-    if(this.state.dbank!=='undefined'){
-      try{
-        // make deposit to bank
-        await this.state.dbank.methods.deposit().send({value: amount.toString(), from: this.state.account});
-        // get bank information
-        const dBankAddress = dBank.networks[this.state.netId].address;
-        const dBankAddressBalance = await web3.utils.fromWei(await web3.eth.getBalance(dBankAddress));
-        // reset new balance
-        this.setState({
-          dbankBalance: dBankAddressBalance
-        })
-      } catch (e) {
-        console.log('Error, deposit: ', e)
-      }
-      document.getElementById("depositAmount").value = '';
-    }
   }
 
   async connect() {
@@ -129,67 +91,6 @@ class RouterApp extends Component {
     // await web3.eth.currentProvider.disconnect();
     // await web3Modal.clearCachedProvider();
     //await this.loadBlockchainData(this.props.dispatch)
-  }
-
-  async withdraw(e) {
-    e.preventDefault()
-    if(this.state.dbank!=='undefined'){
-      try{
-        const dBankAddress = dBank.networks[this.state.netId].address;
-        const dBankAddressBalance = await web3.utils.fromWei(await web3.eth.getBalance(dBankAddress));
-        
-        console.log(this.state.account, this.state.dbank.methods, dBankAddressBalance);
-        await this.state.dbank.methods.withdraw().send({from: this.state.account})
-        // get bank information
-        dBankAddressBalance = await web3.utils.fromWei(await web3.eth.getBalance(dBankAddress));
-        console.log(dBankAddressBalance);
-        // reset new balance
-        this.setState({
-          dbankBalance: dBankAddressBalance
-        })
-      } catch(e) {
-        console.log('Error, withdraw: ', e)
-      }
-    }
-  }
-
-  async borrow(amount) {
-    if(this.state.dbank!=='undefined'){
-      try{
-        await this.state.dbank.methods.borrow().send({value: amount.toString(), from: this.state.account})
-        // get bank information
-        const dBankAddress = dBank.networks[this.state.netId].address;
-        const dBankAddressBalance = await web3.utils.fromWei(await web3.eth.getBalance(dBankAddress));
-        // reset new balance
-        this.setState({
-          dbankBalance: dBankAddressBalance
-        })
-      } catch (e) {
-        console.log('Error, borrow: ', e)
-      }
-      document.getElementById("depositAmount").value = '';
-    }
-  }
-
-  async payOff(e) {
-    e.preventDefault()
-    if(this.state.dbank!=='undefined'){
-      try{
-        const collateralEther = await this.state.dbank.methods.collateralEther(this.state.account).call({from: this.state.account})
-        const tokenBorrowed = collateralEther/2
-        await this.state.token.methods.approve(this.state.dBankAddress, tokenBorrowed.toString()).send({from: this.state.account})
-        await this.state.dbank.methods.payOff().send({from: this.state.account})
-        // get bank information
-        const dBankAddress = dBank.networks[this.state.netId].address;
-        const dBankAddressBalance = await web3.utils.fromWei(await web3.eth.getBalance(dBankAddress));
-        // reset new balance
-        this.setState({
-          dbankBalance: dBankAddressBalance
-        })
-      } catch(e) {
-        console.log('Error, pay off: ', e)
-      }
-    }
   }
 
   constructor(props) {

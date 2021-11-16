@@ -22,7 +22,7 @@ class App extends Component {
 
   async componentWillMount() {
     if(typeof window.ethereum!=='undefined'){
-      await this.loadBlockchainData()
+      // await this.loadBlockchainData()
     } else {
       window.alert('Please install MetaMask')
     }

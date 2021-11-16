@@ -1,0 +1,93 @@
+.uniswap-container {
+    position: absolute;
+    inset: 50% auto auto 50%;
+    border: 1px solid rgb(204, 204, 204);
+    /* background: rgb(255, 255, 255); */
+    overflow: auto;
+    border-radius: 4px;
+    outline: none;
+    padding: 20px;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+    border: 0;
+}
+
+.ReactModal__Overlay{
+    z-index: 2;
+}
+
+.ReactModal__Content{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: none !important;
+
+    .uniswap-content{
+        position: relative;
+        
+        .close {
+            position: absolute;
+            left: 0;
+            top: -25px;
+            width: 42px;
+            height: 42px;
+            opacity: 0.8;
+            z-index: 2;
+            background: #DA18A3;
+            border-radius: 50px;
+            box-shadow: 0px 0px 4px 2px #888888;
+            z-index: 3;
+        }
+        .close:hover {
+            opacity: 1;
+        }
+        
+        .close:before, .close:after {
+            position: absolute;
+            left: 20px;
+            background-color: #FFF;
+            top: 11px;
+            content: ' ';
+            height: 20px;
+            width: 2px;
+        }
+        .close:before {
+            transform: rotate(45deg);
+        }
+        .close:after {
+            transform: rotate(-45deg);
+        }
+        
+        .uniswap{
+            color: #333;
+            min-width: 400px;
+    
+            .uni-ic__swap-input-container{
+                margin-bottom: 20px;
+            }
+    
+            .uni-ic__swap-divider {
+                padding: 4px !important;
+                border-radius: 12px !important;
+                height: 40px !important;
+                width: 40px !important;
+                position: relative !important;
+                margin-top: -14px !important;
+                margin-bottom: -14px !important;
+                left: calc(50% - 16px) !important;
+                background-color: RGB(247, 248, 250) !important;
+                border: 4pxsolid RGB(255, 255, 255) !important;
+                z-index: 2 !important;
+                cursor: pointer !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+            }
+        }
+
+    }
+}
+
