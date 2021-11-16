@@ -112,6 +112,10 @@ class RouterApp extends Component {
       <Router history={history}>
         <div>
           <Header connected={this.state.connected} connect={e => this.connect(e)} disconnect={e => this.disconnect(e)} />
+          <Container fliud className="warning">
+            this is a Prototype. Is not intended to be used yet.
+          </Container>
+        
           {/* A <Routes> looks through its children <Route>s and
               renders the first one that matches the current URL. */}
           <Routes>
