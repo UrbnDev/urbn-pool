@@ -15,6 +15,11 @@
     padding-top: 20px;
 }
 
+.read-more-button{
+    color: #C81CC5;
+    cursor: pointer;
+}
+
 .details-content h2{
     margin-bottom: 15px;
     font-size: 1.8rem;
@@ -41,6 +46,20 @@
 .details-creator{
     text-align: left;
     margin-bottom: 40px;
+}
+
+.details-creator a{
+    color: #fff;
+    text-decoration: none;
+}
+
+.details-creator .details-creator-profile-name{
+    transition: 0.3s opacity;
+    opacity: 0.5;
+}
+
+.details-creator .details-creator-profile-name:hover{
+    opacity: 1;
 }
 
 .details-creator-profile{

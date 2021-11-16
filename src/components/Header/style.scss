@@ -1,5 +1,13 @@
-.navbar{
+.main-menu{
   border-bottom: 1px solid #383838;
+
+  .navbar-nav .nav-link:hover{
+    transition: 0.3s ease color;
+  }
+
+  .navbar-nav .nav-link:hover{
+    color: #fff !important;
+  }
 
   .navbar-middle {
     width: 100%;

@@ -44,7 +44,7 @@ class Header extends Component {
   render() {
     
     return (
-      <Navbar expand="lg">
+      <Navbar expand="lg" className="main-menu">
         <Container>
           <Navbar.Brand>
             <Link to={`/`}>
@@ -66,9 +66,9 @@ class Header extends Component {
                 className="me-auto my-2 my-lg-0"
                 style={{ maxHeight: '100px' }}
               >
-                <Nav.Link href="#" className="active">Explore</Nav.Link>
-                <Nav.Link href="#">My Activities</Nav.Link>
-                <Nav.Link href="#">Following</Nav.Link>
+                <Link to="/" className="nav-link active">Explore</Link>
+                <Nav.Link href="#" disabled>My Activities</Nav.Link>
+                <Nav.Link href="#" disabled>Following</Nav.Link>
                 <Nav.Link onClick={()=> this.toogleModal()} >Uniswap</Nav.Link>
               </Nav>
             </div>

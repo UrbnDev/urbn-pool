@@ -154,12 +154,12 @@ class Home extends Component {
         <div className="container mt-5 text-center">
           <Collection />
           <div className="top-section top-artists">
-            <h2>Top Artists</h2>
+            <h2>Fan Pools</h2>
             <Carousel />
           </div>
 
           <div className="top-section hot-albums">
-            <h2>Hot Albums</h2>
+            <h2>Hot Songs</h2>
             {
               this.state.items.length > 0 &&
               <ListingAlbums items={this.state.items} />
