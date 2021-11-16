@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import './style.scss';// Pagination module
 
 // import components
-
+import Details from '../../components/Details';
 class DetailsItem extends Component {
 
   constructor(props) {
@@ -30,7 +30,7 @@ class DetailsItem extends Component {
       .then(data => {
         console.log(data.assets[0]);
         this.setState({
-          items: data.assets[0] // always return only 1
+          item: data.assets[0] // always return only 1
         })
       })
       .catch(err => console.error('error:' + err));
@@ -39,7 +39,10 @@ class DetailsItem extends Component {
   render() {
     return (
       <div className="container mt-5 text-center">
-
+        {
+          this.state.item &&
+          <Details item={this.state.item} />
+        }
       </div>
     );
   }
