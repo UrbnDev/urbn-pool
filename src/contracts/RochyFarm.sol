@@ -1,12 +1,12 @@
 pragma solidity ^0.5.0;
 
-import "./DappToken.sol";
+import "./UrbnToken.sol";
 import "./DaiToken.sol";
 
-contract TokenFarm {
-    string public name = "Dapp Token Farm";
+contract RochyFarm {
+    string public name = "Urbn Rochy Farm";
     address public owner;
-    DappToken public dappToken;
+    UrbnToken public urbnToken;
     DaiToken public daiToken;
 
     address[] public stakers;
@@ -14,8 +14,8 @@ contract TokenFarm {
     mapping(address => bool) public hasStaked;
     mapping(address => bool) public isStaking;
 
-    constructor(DappToken _dappToken, DaiToken _daiToken) public {
-        dappToken = _dappToken;
+    constructor(UrbnToken _urbnToken, DaiToken _daiToken) public {
+        urbnToken = _urbnToken;
         daiToken = _daiToken;
         owner = msg.sender;
     }
@@ -68,7 +68,7 @@ contract TokenFarm {
             address recipient = stakers[i];
             uint balance = stakingBalance[recipient];
             if(balance > 0) {
-                dappToken.transfer(recipient, balance);
+                urbnToken.transfer(recipient, balance);
             }
         }
     }

@@ -16,18 +16,28 @@ import DetailsItem from '../pages/DetailsItem';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 
-// Contracts
-import DaiToken from '../abis/DaiToken.json'
-import DappToken from '../abis/DappToken.json'
-import TokenFarm from '../abis/TokenFarm.json'
-
 const web3 = new Web3(window.ethereum);
 
 const history = createBrowserHistory();
 class RouterApp extends Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      web3: 'undefined',
+      account: '',
+      token: null,
+      balance: 0,
+      netId: '',
+      accounts: '',
+      connected: false,
+    }
+  }
+
+  
   async componentWillMount() {
     if(typeof window.ethereum!=='undefined'){
-      await this.loadWeb3()
+      await this.loadWeb3();
     } else {
       window.alert('Please install MetaMask')
     }
@@ -81,11 +91,7 @@ class RouterApp extends Component {
         balance: 0, 
         netId: '',
         accounts: [],
-        connected: false,
-        token: '', 
-        dbank: '', 
-        dBankAddress: '',
-        dbankBalance: 0
+        connected: false
       })
     }
 
@@ -93,57 +99,6 @@ class RouterApp extends Component {
     // await web3.eth.currentProvider.disconnect();
     // await web3Modal.clearCachedProvider();
     //await this.loadWeb3(this.props.dispatch)
-  }
-
-  async loadContracts() {
-    const networkId = await web3.eth.net.getId();
-    // Load DaiToken
-    const daiTokenData = DaiToken.networks[networkId]
-    if(daiTokenData) {
-      const daiToken = new web3.eth.Contract(DaiToken.abi, daiTokenData.address)
-      this.setState({ daiToken })
-      let daiTokenBalance = await daiToken.methods.balanceOf(this.state.account).call()
-      this.setState({ daiTokenBalance: daiTokenBalance.toString() })
-    } else {
-      window.alert('DaiToken contract not deployed to detected network.')
-    }
-
-    // Load DappToken
-    const dappTokenData = DappToken.networks[networkId]
-    if(dappTokenData) {
-      const dappToken = new web3.eth.Contract(DappToken.abi, dappTokenData.address)
-      this.setState({ dappToken })
-      let dappTokenBalance = await dappToken.methods.balanceOf(this.state.account).call()
-      this.setState({ dappTokenBalance: dappTokenBalance.toString() })
-    } else {
-      window.alert('DappToken contract not deployed to detected network.')
-    }
-
-    // Load TokenFarm
-    const tokenFarmData = TokenFarm.networks[networkId]
-    if(tokenFarmData) {
-      const tokenFarm = new web3.eth.Contract(TokenFarm.abi, tokenFarmData.address)
-      this.setState({ tokenFarm })
-      let stakingBalance = await tokenFarm.methods.stakingBalance(this.state.account).call()
-      this.setState({ stakingBalance: stakingBalance.toString() })
-    } else {
-      window.alert('TokenFarm contract not deployed to detected network.')
-    }
-
-  }
-
-  constructor(props) {
-    super(props)
-    this.state = {
-      web3: 'undefined',
-      account: '',
-      token: null,
-      dbank: null,
-      balance: 0,
-      dbankBalance: 0,
-      dBankAddress: null,
-      connected: false
-    }
   }
 
   render() {

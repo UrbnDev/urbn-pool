@@ -1,6 +1,6 @@
-const DappToken = artifacts.require('DappToken')
+const UrbnToken = artifacts.require('UrbnToken')
 const DaiToken = artifacts.require('DaiToken')
-const TokenFarm = artifacts.require('TokenFarm')
+const RockyFarm = artifacts.require('RochyFarm')
 
 module.exports = async function(deployer, network, accounts) {
   // Deploy Mock DAI Token
@@ -8,15 +8,15 @@ module.exports = async function(deployer, network, accounts) {
   const daiToken = await DaiToken.deployed()
 
   // Deploy Dapp Token
-  await deployer.deploy(DappToken)
-  const dappToken = await DappToken.deployed()
+  await deployer.deploy(UrbnToken)
+  const urbnToken = await UrbnToken.deployed()
 
   // Deploy TokenFarm
-  await deployer.deploy(TokenFarm, dappToken.address, daiToken.address)
-  const tokenFarm = await TokenFarm.deployed()
+  await deployer.deploy(RockyFarm, UrbnToken.address, daiToken.address)
+  const tokenFarm = await RockyFarm.deployed()
 
   // Transfer all tokens to TokenFarm (1 million)
-  await dappToken.transfer(tokenFarm.address, '1000000000000000000000000')
+  await urbnToken.transfer(tokenFarm.address, '1000000000000000000000000')
 
   // Transfer 100 Mock DAI tokens to investor
   await daiToken.transfer(accounts[1], '100000000000000000000')
