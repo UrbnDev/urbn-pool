@@ -8,8 +8,6 @@ import { Container, Row, Col } from 'react-bootstrap';
 
 import { createBrowserHistory } from "history";
 
-import Token from '../abis/Token.json';
-import dBank from '../abis/dBank.json';
 import Web3 from 'web3';
 
 import Home from '../pages/Home';
@@ -18,25 +16,29 @@ import DetailsItem from '../pages/DetailsItem';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 
+// Contracts
+import DaiToken from '../abis/DaiToken.json'
+import DappToken from '../abis/DappToken.json'
+import TokenFarm from '../abis/TokenFarm.json'
+
 const web3 = new Web3(window.ethereum);
 
 const history = createBrowserHistory();
-
 class RouterApp extends Component {
   async componentWillMount() {
     if(typeof window.ethereum!=='undefined'){
-      await this.loadBlockchainData()
+      await this.loadWeb3()
     } else {
       window.alert('Please install MetaMask')
     }
   }
 
-  async loadBlockchainData() {
+  async loadWeb3() {
     // first of all enabled ethereum
     await window.ethereum.enable();
       
     const netId = await web3.eth.net.getId()
-    const accounts = await web3.eth.getAccounts()
+    const accounts = await web3.eth.getAccounts();
 
     console.log(web3, accounts);
 
@@ -58,7 +60,7 @@ class RouterApp extends Component {
   }
 
   async connect() {
-    await this.loadBlockchainData()
+    await this.loadWeb3()
   }
 
   async disconnect() {
@@ -90,7 +92,44 @@ class RouterApp extends Component {
     
     // await web3.eth.currentProvider.disconnect();
     // await web3Modal.clearCachedProvider();
-    //await this.loadBlockchainData(this.props.dispatch)
+    //await this.loadWeb3(this.props.dispatch)
+  }
+
+  async loadContracts() {
+    const networkId = await web3.eth.net.getId();
+    // Load DaiToken
+    const daiTokenData = DaiToken.networks[networkId]
+    if(daiTokenData) {
+      const daiToken = new web3.eth.Contract(DaiToken.abi, daiTokenData.address)
+      this.setState({ daiToken })
+      let daiTokenBalance = await daiToken.methods.balanceOf(this.state.account).call()
+      this.setState({ daiTokenBalance: daiTokenBalance.toString() })
+    } else {
+      window.alert('DaiToken contract not deployed to detected network.')
+    }
+
+    // Load DappToken
+    const dappTokenData = DappToken.networks[networkId]
+    if(dappTokenData) {
+      const dappToken = new web3.eth.Contract(DappToken.abi, dappTokenData.address)
+      this.setState({ dappToken })
+      let dappTokenBalance = await dappToken.methods.balanceOf(this.state.account).call()
+      this.setState({ dappTokenBalance: dappTokenBalance.toString() })
+    } else {
+      window.alert('DappToken contract not deployed to detected network.')
+    }
+
+    // Load TokenFarm
+    const tokenFarmData = TokenFarm.networks[networkId]
+    if(tokenFarmData) {
+      const tokenFarm = new web3.eth.Contract(TokenFarm.abi, tokenFarmData.address)
+      this.setState({ tokenFarm })
+      let stakingBalance = await tokenFarm.methods.stakingBalance(this.state.account).call()
+      this.setState({ stakingBalance: stakingBalance.toString() })
+    } else {
+      window.alert('TokenFarm contract not deployed to detected network.')
+    }
+
   }
 
   constructor(props) {
@@ -116,8 +155,6 @@ class RouterApp extends Component {
             this is a Prototype. Is not intended to be used yet.
           </Container>
         
-          {/* A <Routes> looks through its children <Route>s and
-              renders the first one that matches the current URL. */}
           <Routes>
             <Route path='/' element={<Home/>} />
           </Routes>
