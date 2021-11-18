@@ -13,11 +13,11 @@
     border: 0;
 }
 
-.ReactModal__Overlay{
+.ReactModal__Overlay {
     z-index: 2;
 }
 
-.ReactModal__Content{
+.ReactModal__Content {
     height: 100%;
     width: 100%;
     display: flex;
@@ -25,27 +25,30 @@
     align-items: center;
     background: none !important;
 
-    .uniswap-content{
+    .uniswap-content {
         position: relative;
-        
+
         .close {
             position: absolute;
             left: 0;
             top: -25px;
             width: 42px;
             height: 42px;
-            opacity: 0.8;
+            opacity: 1;
             z-index: 2;
             background: #DA18A3;
             border-radius: 50px;
             box-shadow: 0px 0px 4px 2px #888888;
             z-index: 3;
         }
+
         .close:hover {
             opacity: 1;
+            background-color: #bf178f;
         }
-        
-        .close:before, .close:after {
+
+        .close:before,
+        .close:after {
             position: absolute;
             left: 20px;
             background-color: #FFF;
@@ -54,21 +57,23 @@
             height: 20px;
             width: 2px;
         }
+
         .close:before {
             transform: rotate(45deg);
         }
+
         .close:after {
             transform: rotate(-45deg);
         }
-        
-        .uniswap{
+
+        .uniswap {
             color: #333;
             min-width: 400px;
-    
-            .uni-ic__swap-input-container{
+
+            .uni-ic__swap-input-container {
                 margin-bottom: 20px;
             }
-    
+
             .uni-ic__swap-divider {
                 padding: 4px !important;
                 border-radius: 12px !important;
@@ -90,4 +95,3 @@
 
     }
 }
-

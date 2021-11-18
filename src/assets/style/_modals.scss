@@ -1,0 +1,63 @@
+.artist-invest-content {
+    min-height: 300px;
+    min-width: 400px;
+    background-color: #2D2E36;
+    border-radius: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    padding: 40px;
+
+    .form {
+        width: 100%;
+        text-align: center;
+
+        .input {
+            margin-bottom: 30px;
+        }
+
+        span {
+            font-size: 9px;
+        }
+    }
+
+    .close {
+        position: absolute;
+        left: 0;
+        top: -25px;
+        width: 42px;
+        height: 42px;
+        opacity: 1 !important;
+        z-index: 2;
+        background: #DA18A3;
+        border-radius: 50px;
+        box-shadow: 0px 0px 4px 2px #888888;
+        z-index: 3;
+        cursor: pointer
+    }
+
+    .close:hover {
+        background: #99066f !important;
+    }
+}
+
+.ReactModal__Content .artist-invest-content .close:before {
+    transform: rotate(45deg);
+}
+
+.ReactModal__Content .artist-invest-content .close:before,
+.ReactModal__Content .artist-invest-content .close:after {
+    position: absolute;
+    left: 20px;
+    background-color: #FFF;
+    top: 11px;
+    content: ' ';
+    height: 20px;
+    width: 2px;
+}
+
+.ReactModal__Content .artist-invest-content .close:after {
+    transform: rotate(-45deg);
+}

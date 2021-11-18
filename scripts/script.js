@@ -9,6 +9,7 @@ module.exports = async function(callback) {
     const contract = await ContractName.deployed()
     console.log('Contract fetched', contract.address)
   }
+  
   catch(error) {
     console.log(error)
   }

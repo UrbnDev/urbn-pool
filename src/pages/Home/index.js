@@ -1,9 +1,4 @@
-import { Tabs, Tab } from 'react-bootstrap'
 import React, { Component } from 'react';
-import Token from '../../abis/Token.json'
-import dBank from '../../abis/dBank.json';
-import Web3 from 'web3';
-import { OpenSeaPort, Network } from 'opensea-js'
 
 import '../../assets/style/main.scss';
 
@@ -13,15 +8,6 @@ import './style.css';// Pagination module
 import ListingAlbums from '../../components/ListingAlbums';
 import Collection from '../../components/Collections';
 import Carousel from '../../components/Carousel';
-
-// This example provider won't let you make transactions, only read-only calls:
-const provider = new Web3.providers.HttpProvider('https://mainnet.infura.io');
-
-const seaport = new OpenSeaPort(provider, {
-  networkName: Network.Main
-})
-
-const web3 = new Web3(window.ethereum)
 
 class Home extends Component {
 
@@ -38,6 +24,7 @@ class Home extends Component {
     fetch(url, options)
       .then(res => res.json())
       .then(data => {
+        console.log('got data: ', data);
         this.setState({
           items: data.assets
         })

@@ -10,6 +10,12 @@ import logo from '../../assets/img/logo-urbn.svg';
 
 import './style.scss';
 
+import Web3 from 'web3';
+
+import UrbnToken from '../../abis/UrbnToken.json';
+
+const web3 = new Web3(window.ethereum);
+
 const customStyles = {
   content: {
     top: '50%',
@@ -30,7 +36,9 @@ class Header extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      openUniswap: false
+      openUniswap: false,
+      urbnTokenBalance: 0,
+      wrongNet: false
     }
   }
  
@@ -39,6 +47,25 @@ class Header extends Component {
     this.setState({
       openUniswap: !this.state.openUniswap
     })
+  }
+
+  async loadContracts() {
+    const networkId = await web3.eth.net.getId();
+    // Load UrbnToken
+    const urbnTokenData = UrbnToken.networks[networkId]
+    if(urbnTokenData) {
+      const urbnToken = new web3.eth.Contract(UrbnToken.abi, urbnTokenData.address)
+      let urbnTokenBalance = await urbnToken.methods.balanceOf(this.state.account).call()
+      this.setState({ 
+        wrongNet: false,
+        urbnToken,
+        urbnTokenBalance: urbnTokenBalance.toString()
+      })
+    } else {
+      this.setState({ 
+        wrongNet: true
+      })
+    }
   }
 
   render() {
@@ -67,9 +94,9 @@ class Header extends Component {
                 style={{ maxHeight: '100px' }}
               >
                 <Link to="/" className="nav-link active">Explore</Link>
-                <Nav.Link href="#" disabled>My Activities</Nav.Link>
                 <Nav.Link href="#" disabled>Following</Nav.Link>
                 <Nav.Link onClick={()=> this.toogleModal()} >Uniswap</Nav.Link>
+                <Nav.Link href="#" disabled>{ this.state.urbnTokenBalance } URBN</Nav.Link>
               </Nav>
             </div>
             <div className="buttons">
@@ -93,7 +120,7 @@ class Header extends Component {
 
           <div className="uniswap-content">
 
-            <a onClick={this.toogleModal} class="close"></a>
+            <a onClick={this.toogleModal} className="close"></a>
             <Uniswap />
             
           </div>

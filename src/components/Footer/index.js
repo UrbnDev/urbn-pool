@@ -8,22 +8,42 @@ import './style.scss';// Pagination module
 
 import logo from '../../assets/img/logo-urbn.svg';
 
-class Footer extends Component {
+import Web3 from 'web3';
 
-  async componentWillMount() {
-    
-  }
+const web3 = new Web3(window.ethereum);
+
+class Footer extends Component {
 
   constructor(props) {
     super(props)
     this.state = {
+      faucetToken: this.props.faucetToken,
+      daiToken: this.props.daiToken,
+      account: this.props.account,
+      loading: false
     }
-  }
 
-  setFavorite = () => {
-    this.setState({
-      
+    console.log(this.props);
+  }
+  
+  faucet = async () => {
+    console.log(this.state.faucetToken);
+    console.log('approved mDai for faucet...');
+    this.state.daiToken.methods.approve(this.state.faucetToken._address, 200).send({ from: this.state.account }).on('transactionHash', (hash) => {
+      console.log('getting mDai from faucet...');
+      this.state.faucetToken.methods.distribute().call()
+      // this.state.faucetToken.methods.getSupply().call()
+      .then((res)=>{
+        this.setState({ 
+          loading: false
+        })
+        console.log('done faucet...', res);
+      })
     })
+
+    // const totalSupply = await this.state.faucetToken.methods.getSupply().call();
+    // await this.state.faucetToken.methods.distribute().call()
+    
   }
  
   render() {
@@ -51,6 +71,12 @@ class Footer extends Component {
               <li><a href="#">Explore</a></li>
               <li><a href="#">how it Works</a></li>
               <li><a href="#">Contact Us</a></li>
+              {
+                this.state.faucetToken &&
+                <li>
+                  <a onClick={this.faucet} >Give me 200 mDai</a>
+                </li>
+              }
             </ul>
           </Col>
           <Col xs={12} md={3}>
