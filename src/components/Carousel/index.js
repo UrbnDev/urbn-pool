@@ -85,7 +85,7 @@ class Carousel extends Component {
     const netId = await web3.eth.net.getId()
     const accounts = await web3.eth.getAccounts();
 
-    console.log(web3, accounts);
+    // console.log(web3, accounts);
 
     //load balance
     if(accounts[0] && typeof accounts[0] !=='undefined'){

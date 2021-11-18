@@ -31,8 +31,6 @@ class Home extends Component {
       })
       .catch(err => console.error('error:' + err));
 
-    console.log(this.props);
-
   }
 
   render() {

@@ -10,6 +10,8 @@ import { createBrowserHistory } from "history";
 
 import Web3 from 'web3';
 
+import DaiToken from '../abis/DaiToken.json';
+
 import Home from '../pages/Home';
 import DetailsItem from '../pages/DetailsItem';
 
@@ -38,6 +40,7 @@ class RouterApp extends Component {
   async componentWillMount() {
     if(typeof window.ethereum!=='undefined'){
       await this.loadWeb3();
+      await this.loadContracts();
     } else {
       window.alert('Please install MetaMask')
     }
@@ -50,8 +53,7 @@ class RouterApp extends Component {
     const netId = await web3.eth.net.getId()
     const accounts = await web3.eth.getAccounts();
 
-    console.log(web3, accounts);
-
+    
     //load balance
     if(accounts[0] && typeof accounts[0] !=='undefined'){
       const balance = await web3.eth.getBalance(accounts[0])
@@ -63,9 +65,30 @@ class RouterApp extends Component {
         accounts: accounts,
         connected: true
       })
+      console.log('loaded wallet: ', web3);
     } else {
       window.alert('Please login with MetaMask');
       return;
+    }
+  }
+
+  async loadContracts(){
+    const networkId = await web3.eth.net.getId();
+    // Load DaiToken
+    const daiTokenData = DaiToken.networks[networkId]
+    if(daiTokenData) {
+      const daiToken = new web3.eth.Contract(DaiToken.abi, daiTokenData.address)
+      let daiTokenBalance = await daiToken.methods.balanceOf(this.state.account).call()
+      this.setState({ 
+        wrongNet: false,
+        daiToken,
+        daiTokenBalance: daiTokenBalance.toString()
+      })
+      console.log('loaded dai contract: ', daiToken);
+    } else {
+      this.setState({ 
+        wrongNet: true
+      })
     }
   }
 
@@ -106,7 +129,7 @@ class RouterApp extends Component {
       <Router history={history}>
         <div>
           <Header connected={this.state.connected} connect={e => this.connect(e)} disconnect={e => this.disconnect(e)} />
-          <Container fliud className="warning">
+          <Container className="warning">
             this is a Prototype. Is not intended to be used yet.
           </Container>
         
