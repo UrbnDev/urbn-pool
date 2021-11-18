@@ -120,7 +120,7 @@ class Header extends Component {
 
           <div className="uniswap-content">
 
-            <a onClick={this.toogleModal} class="close"></a>
+            <a onClick={this.toogleModal} className="close"></a>
             <Uniswap />
             
           </div>

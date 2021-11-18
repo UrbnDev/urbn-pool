@@ -10,7 +10,7 @@ contract RochyFarm {
     DaiToken public daiToken;
 
     address[] public stakers;
-    mapping(address => uint) public stakingBalance;
+    mapping(address => uint256) public stakingBalance;
     mapping(address => bool) public hasStaked;
     mapping(address => bool) public isStaking;
 
@@ -20,7 +20,7 @@ contract RochyFarm {
         owner = msg.sender;
     }
 
-    function stakeTokens(uint _amount) public {
+    function stakeTokens(uint256 _amount) public {
         // Require amount greater than 0
         require(_amount > 0, "amount cannot be 0");
 
@@ -31,7 +31,7 @@ contract RochyFarm {
         stakingBalance[msg.sender] = stakingBalance[msg.sender] + _amount;
 
         // Add user to stakers array *only* if they haven't staked already
-        if(!hasStaked[msg.sender]) {
+        if (!hasStaked[msg.sender]) {
             stakers.push(msg.sender);
         }
 
@@ -41,21 +41,23 @@ contract RochyFarm {
     }
 
     // Unstaking Tokens (Withdraw)
-    function unstakeTokens() public {
+    function unstakeTokens(uint256 _amount) public {
         // Fetch staking balance
-        uint balance = stakingBalance[msg.sender];
-
+        uint256 balance = stakingBalance[msg.sender];
         // Require amount greater than 0
         require(balance > 0, "staking balance cannot be 0");
+        require(balance > _amount, "there's not enough funds");
 
         // Transfer Mock Dai tokens to this contract for staking
-        daiToken.transfer(msg.sender, balance);
+        daiToken.transfer(msg.sender, _amount);
 
         // Reset staking balance
-        stakingBalance[msg.sender] = 0;
+        stakingBalance[msg.sender] = stakingBalance[msg.sender] - _amount;
 
         // Update staking status
-        isStaking[msg.sender] = false;
+        if (stakingBalance[msg.sender] == 0) {
+            isStaking[msg.sender] = false;
+        }
     }
 
     // Issuing Tokens
@@ -64,10 +66,10 @@ contract RochyFarm {
         require(msg.sender == owner, "caller must be the owner");
 
         // Issue tokens to all stakers
-        for (uint i=0; i<stakers.length; i++) {
+        for (uint256 i = 0; i < stakers.length; i++) {
             address recipient = stakers[i];
-            uint balance = stakingBalance[recipient];
-            if(balance > 0) {
+            uint256 balance = stakingBalance[recipient];
+            if (balance > 0) {
                 urbnToken.transfer(recipient, balance);
             }
         }

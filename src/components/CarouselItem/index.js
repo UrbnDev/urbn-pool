@@ -11,7 +11,6 @@ import Web3 from 'web3';
 
 // Contracts
 import DaiToken from '../../abis/DaiToken.json';
-import UrbnToken from '../../abis/UrbnToken.json';
 
 const web3 = new Web3(window.ethereum);
 
@@ -39,7 +38,7 @@ class CarouselItem extends Component {
       artist: this.props.artist,
       account: this.props.account,
       openModal: false,
-      loading: true
+      loading: false
     }
 
     if (this.state.artist?.artistContract){
@@ -73,7 +72,9 @@ class CarouselItem extends Component {
     const urbnFarmData = artistContract.networks[networkId]
     if(urbnFarmData) {
       const urbnFarm = new web3.eth.Contract(artistContract.abi, urbnFarmData.address)
+      console.log('1');
       let stakingBalance = await urbnFarm.methods.stakingBalance(this.state.account).call()
+      console.log('1.5');
       this.setState({ 
         wrongNet: false,
         urbnFarm: urbnFarm,
@@ -124,7 +125,7 @@ class CarouselItem extends Component {
         <Card>
           <div className="artist-img-profile-container">
             <div className="artist-img-profile">
-              <iframe src="https://giphy.com/embed/Y8a0CT2xsbo9G" width="100%" height="100%" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
+              <iframe src="https://giphy.com/embed/Y8a0CT2xsbo9G" width="100%" height="100%" frameBorder="0" className="giphy-embed" allowFullScreen></iframe>
             </div>
           </div>
           <Card.Body>
@@ -149,7 +150,7 @@ class CarouselItem extends Component {
           <Card.Body>
             <Card.Title>{ this.state.artist.name.first + ' ' + this.state.artist.name.last }</Card.Title>
             <Card.Text>
-              { this.state.stakingBalance } DAI
+              { this.state.stakingBalance } mDAI
             </Card.Text>
           </Card.Body>
         </Card>
@@ -197,7 +198,7 @@ class CarouselItem extends Component {
 
               <a onClick={this.toogleModal} className="close"></a>
 
-              <div class="loader"></div>
+              <div className="loader"></div>
               
             </div>
           }

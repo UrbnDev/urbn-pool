@@ -11,6 +11,7 @@ import { createBrowserHistory } from "history";
 import Web3 from 'web3';
 
 import DaiToken from '../abis/DaiToken.json';
+import Faucet from '../abis/Faucet.json';
 
 import Home from '../pages/Home';
 import DetailsItem from '../pages/DetailsItem';
@@ -90,6 +91,21 @@ class RouterApp extends Component {
         wrongNet: true
       })
     }
+
+    // Load Faucet Contract
+    const faucetTokenData = Faucet.networks[networkId]
+    if(faucetTokenData) {
+      const faucetToken = new web3.eth.Contract(Faucet.abi, faucetTokenData.address)
+      this.setState({ 
+        wrongNet: false,
+        faucetToken
+      })
+      console.log('loaded faucet: ', this.state.faucetToken);
+    } else {
+      this.setState({ 
+        wrongNet: true
+      })
+    }
   }
 
   async connect() {
@@ -97,8 +113,7 @@ class RouterApp extends Component {
   }
 
   async disconnect() {
-    console.log(web3.eth);
-    const self = this;
+    
     try {
       await window.ethereum.request({
         method: "wallet_requestPermissions",
@@ -125,12 +140,13 @@ class RouterApp extends Component {
   }
 
   render() {
+    console.log(this.state.faucetToken);
     return (
       <Router history={history}>
         <div>
           <Header connected={this.state.connected} connect={e => this.connect(e)} disconnect={e => this.disconnect(e)} />
           <Container className="warning">
-            this is a Prototype. Is not intended to be used yet.
+            This is a Prototype. Is not intended to be used yet.
           </Container>
         
           <Routes>
@@ -141,7 +157,14 @@ class RouterApp extends Component {
           </Routes>
 
           <div className="footer">
-            <Footer />
+            {
+              this.state.daiToken && this.state.faucetToken &&
+              <Footer 
+                faucetToken={ this.state.faucetToken } 
+                daiToken={this.state.daiToken}  
+                account={ this.state.account }
+              />
+            }
           </div>
 
           <div className="copywriting">
