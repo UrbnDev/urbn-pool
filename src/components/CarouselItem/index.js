@@ -28,25 +28,28 @@ const customStyles = {
 
 class CarouselItem extends Component {
 
-  async componentWillMount() {
-    
-  }
-
   constructor(props) {
     super(props)
     this.state = {
       artist: this.props.artist,
       account: this.props.account,
       openModal: false,
+      wrongNet: false,
       loading: false
     }
 
-    if (this.state.artist?.artistContract){
+  }
+
+  async componentDidMount() {
+    if (
+      this.state.artist?.artistContract
+    ){
       this.loadContracts(this.state.artist.artistContract);
     } else {
-      window.alert('Missing Contract for Artist.')
+      this.setState({
+        wrongNet: true
+      })
     }
-
   }
 
   async loadContracts(artistContract) {
@@ -72,9 +75,7 @@ class CarouselItem extends Component {
     const urbnFarmData = artistContract.networks[networkId]
     if(urbnFarmData) {
       const urbnFarm = new web3.eth.Contract(artistContract.abi, urbnFarmData.address)
-      console.log('1');
       let stakingBalance = await urbnFarm.methods.stakingBalance(this.state.account).call()
-      console.log('1.5');
       this.setState({ 
         wrongNet: false,
         urbnFarm: urbnFarm,
@@ -86,23 +87,25 @@ class CarouselItem extends Component {
   }
 
   stakeTokens = (amount) => {
-
     if (!this.depositAmount.value) return;
-    console.log('stacking: ', amount);
-    
+    // console.log('stacking: ', amount);
     this.setState({ loading: true })
-    console.log('approving dai before transact');
+    // console.log('approving dai before transact');
     this.state.daiToken.methods.approve(this.state.urbnFarm._address, amount).send({ from: this.state.account }).on('transactionHash', (hash) => {
       this.stakingTokens(amount);
+    }).catch((error) => {
+      console.log(error)
+      this.notify(error.message);
+      this.setState({ loading: false })
     })
 
   }
 
   stakingTokens = (amount) =>{
-    console.log('staking into contract: ', this.state.urbnFarm);
-    console.log('staking by account: ', this.state.account);
+    // console.log('staking into contract: ', this.state.urbnFarm);
+    // console.log('staking by account: ', this.state.account);
     this.state.urbnFarm.methods.stakeTokens(amount).send({ from: this.state.account }).on('transactionHash', (hash) => {
-      console.log('transaction done: ', hash);
+      // console.log('transaction done: ', hash);
       this.setState({ 
         loading: false
       });
@@ -113,14 +116,20 @@ class CarouselItem extends Component {
   }
    
   toogleModal = () =>{ 
-    console.log('toogle: ' );
     this.setState({
       openModal: !this.state.openModal
     })
   }
 
+  notify = (message) => {
+    console.log(message);
+    // message
+  };
+
   render() {
-    if (this.state.wrongNet){
+    if (
+      this.state.wrongNet
+    ){
       return (
         <Card>
           <div className="artist-img-profile-container">

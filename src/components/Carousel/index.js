@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import { Card, Button } from 'react-bootstrap';
+
 import axios from 'axios';
 import Web3 from 'web3';
 
@@ -24,11 +26,6 @@ import RochyFarm from '../../abis/RochyFarm.json';
 const web3 = new Web3(window.ethereum);
 
 class Carousel extends Component {
-
-  async componentWillMount() {
-    
-  }
-
   constructor(props) {
     super(props)
     this.state = {
@@ -55,8 +52,14 @@ class Carousel extends Component {
     }
 
     // get getArtists
-    this.loadWallet();
+    if(typeof window.ethereum!=='undefined'){
+      this.loadWallet();
+    } else {
+      // not connected
+    }
+    
     this.getArtists();
+    
   }
 
   getArtists = () =>{
@@ -84,9 +87,6 @@ class Carousel extends Component {
   async loadWallet(){
     const netId = await web3.eth.net.getId()
     const accounts = await web3.eth.getAccounts();
-
-    // console.log(web3, accounts);
-
     //load balance
     if(accounts[0] && typeof accounts[0] !=='undefined'){
       const balance = await web3.eth.getBalance(accounts[0])
@@ -123,10 +123,31 @@ class Carousel extends Component {
             this.state.account && this.state.artists.map((artist,i) => {
               return(
                 <SwiperSlide key={`swipe_artist_${i}`} style={{ width: '180px' }}>
-                  <CarouselItem artist={artist} account={this.state.account} />
+                  <CarouselItem 
+                    artist={artist} 
+                    account={this.state.account} 
+                  />
                 </SwiperSlide>
               )
             })
+          }
+          {
+            !this.state.account &&
+            <SwiperSlide style={{ width: '180px' }}>
+              <Card>
+                <div className="artist-img-profile-container">
+                  <div className="artist-img-profile">
+                    <iframe src="https://giphy.com/embed/Y8a0CT2xsbo9G" width="100%" height="100%" frameBorder="0" className="giphy-embed" allowFullScreen></iframe>
+                  </div>
+                </div>
+                <Card.Body>
+                  <Card.Title>{ 'Warning' }</Card.Title>
+                  <Card.Text>
+                    Wrong Network
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+            </SwiperSlide>
           }
         </Swiper>
       );

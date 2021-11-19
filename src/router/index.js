@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Container, Row, Col } from 'react-bootstrap';
+
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+import { EmitProvider } from "react-emit";
 
 import { createBrowserHistory } from "history";
 
@@ -12,6 +13,7 @@ import Web3 from 'web3';
 
 import DaiToken from '../abis/DaiToken.json';
 import Faucet from '../abis/Faucet.json';
+import UrbnToken from '../abis/UrbnToken.json';
 
 import Home from '../pages/Home';
 import DetailsItem from '../pages/DetailsItem';
@@ -36,7 +38,6 @@ class RouterApp extends Component {
       connected: false,
     }
   }
-
   
   async componentWillMount() {
     if(typeof window.ethereum!=='undefined'){
@@ -50,11 +51,8 @@ class RouterApp extends Component {
   async loadWeb3() {
     // first of all enabled ethereum
     await window.ethereum.enable();
-      
     const netId = await web3.eth.net.getId()
     const accounts = await web3.eth.getAccounts();
-
-    
     //load balance
     if(accounts[0] && typeof accounts[0] !=='undefined'){
       const balance = await web3.eth.getBalance(accounts[0])
@@ -85,7 +83,25 @@ class RouterApp extends Component {
         daiToken,
         daiTokenBalance: daiTokenBalance.toString()
       })
-      console.log('loaded dai contract: ', daiToken);
+      console.log('loaded mDai contract: ', daiToken);
+    } else {
+      this.setState({ 
+        wrongNet: true
+      })
+    }
+
+    // Load UrbnToken
+    const urbnTokenData = UrbnToken.networks[networkId]
+    if(urbnTokenData) {
+      const urbnToken = new web3.eth.Contract(UrbnToken.abi, urbnTokenData.address)
+      console.log('here: ', this.state.account);
+      let urbnTokenBalance = await urbnToken.methods.balanceOf(this.state.account).call()
+      this.setState({ 
+        wrongNet: false,
+        urbnToken,
+        urbnTokenBalance: urbnTokenBalance.toString()
+      })
+      console.log('loaded URBN token contracts: ', urbnTokenBalance, urbnToken);
     } else {
       this.setState({ 
         wrongNet: true
@@ -139,49 +155,61 @@ class RouterApp extends Component {
     //await this.loadWeb3(this.props.dispatch)
   }
 
+  triggerToast = (message) =>{
+    toast(message);
+  }
+
   render() {
-    console.log(this.state.faucetToken);
+    
     return (
-      <Router history={history}>
-        <div>
-          <Header connected={this.state.connected} connect={e => this.connect(e)} disconnect={e => this.disconnect(e)} />
-          <Container className="warning">
-            This is a Prototype. Is not intended to be used yet.
-          </Container>
-        
-          <Routes>
-            <Route path='/' element={<Home/>} />
-          </Routes>
-          <Routes>
-            <Route path='/item/:id' element={<DetailsItem/>} />
-          </Routes>
-
-          <div className="footer">
-            {
-              this.state.daiToken && this.state.faucetToken &&
-              <Footer 
-                faucetToken={ this.state.faucetToken } 
-                daiToken={this.state.daiToken}  
-                account={ this.state.account }
-              />
-            }
-          </div>
-
-          <div className="copywriting">
-            <Container>
-              <Row>
-                <Col>
-                  @2021 Urbn Music Pool
-                </Col>
-                <Col>
-                    
-                </Col>
-              </Row>
+      <EmitProvider>
+        <Router history={history}>
+          <div>
+            <Header 
+              connected={this.state.connected} 
+              connect={e => this.connect(e)} 
+              disconnect={e => this.disconnect(e)} 
+              account={ this.state.account }
+              urbnTokenBalance={ this.state.urbnTokenBalance }
+            />
+            <Container className="warning">
+              This is a Prototype. Is not intended to be used yet.
             </Container>
-          </div>
+          
+            <Routes>
+              <Route path='/' element={<Home history={history}/>} />
+            </Routes>
+            <Routes>
+              <Route path='/item/:id' element={<DetailsItem/>} />
+            </Routes>
 
-        </div>
-      </Router>
+            <div className="footer">
+              {
+                this.state.daiToken && this.state.faucetToken &&
+                <Footer 
+                  faucetToken={ this.state.faucetToken } 
+                  daiToken={this.state.daiToken}  
+                  account={ this.state.account }
+                />
+              }
+            </div>
+
+            <div className="copywriting">
+              <Container>
+                <Row>
+                  <Col>
+                    @2021 Urbn Music Pool
+                  </Col>
+                  <Col>
+                      
+                  </Col>
+                </Row>
+              </Container>
+            </div>
+
+          </div>
+        </Router>
+      </EmitProvider>
     );
   }
 }
