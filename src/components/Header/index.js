@@ -28,44 +28,22 @@ const customStyles = {
 };
 
 class Header extends Component {
-
-  async componentWillMount() {
-    
-  }
-
   constructor(props) {
     super(props)
     this.state = {
       openUniswap: false,
-      urbnTokenBalance: 0,
-      wrongNet: false
+      wrongNet: false,
+      account: this.props.account,
+      urbnTokenBalance: this.props.urbnTokenBalance
     }
   }
+
+  async componentDidMount() {}
  
   toogleModal = () =>{ 
-    console.log('toogle: ' );
     this.setState({
       openUniswap: !this.state.openUniswap
     })
-  }
-
-  async loadContracts() {
-    const networkId = await web3.eth.net.getId();
-    // Load UrbnToken
-    const urbnTokenData = UrbnToken.networks[networkId]
-    if(urbnTokenData) {
-      const urbnToken = new web3.eth.Contract(UrbnToken.abi, urbnTokenData.address)
-      let urbnTokenBalance = await urbnToken.methods.balanceOf(this.state.account).call()
-      this.setState({ 
-        wrongNet: false,
-        urbnToken,
-        urbnTokenBalance: urbnTokenBalance.toString()
-      })
-    } else {
-      this.setState({ 
-        wrongNet: true
-      })
-    }
   }
 
   render() {
@@ -96,7 +74,7 @@ class Header extends Component {
                 <Link to="/" className="nav-link active">Explore</Link>
                 <Nav.Link href="#" disabled>Following</Nav.Link>
                 <Nav.Link onClick={()=> this.toogleModal()} >Uniswap</Nav.Link>
-                <Nav.Link href="#" disabled>{ this.state.urbnTokenBalance } URBN</Nav.Link>
+                <Nav.Link href="#" disabled>{ this.state.urbnTokenBalance ? this.state.urbnTokenBalance : 0 } URBN</Nav.Link>
               </Nav>
             </div>
             <div className="buttons">

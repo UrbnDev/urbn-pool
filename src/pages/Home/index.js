@@ -24,7 +24,7 @@ class Home extends Component {
     fetch(url, options)
       .then(res => res.json())
       .then(data => {
-        console.log('got data: ', data);
+        // console.log('got data: ', data);
         this.setState({
           items: data.assets
         })

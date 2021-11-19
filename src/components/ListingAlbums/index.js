@@ -28,8 +28,6 @@ class Carousel extends Component {
 
   getAlbum = () =>{
 
-    console.log(this.state.items);
-
     /*
     axios.get('https://randomuser.me/api/?results=50')
     .then(function (response) {

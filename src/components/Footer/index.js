@@ -22,8 +22,6 @@ class Footer extends Component {
       account: this.props.account,
       loading: false
     }
-
-    console.log(this.props);
   }
   
   faucet = async () => {
